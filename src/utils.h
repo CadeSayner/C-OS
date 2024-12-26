@@ -11,3 +11,7 @@ struct InterruptRegisters{
     // these are pushed by the processor when the interrupt first fires
     uint32_t eip, csm, eflags, useresp, ss;
 };
+
+void int32_to_hex_string(uint32_t num, char* hexString);
+
+void printHexInt(uint32_t num);
