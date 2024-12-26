@@ -30,3 +30,15 @@ void printHexInt(uint32_t num){
     int32_to_hex_string(num, str);
     print(str);
 }
+
+uint32_t pow(int n, int m){
+    if(m == 0){
+        return 1;
+    }
+    uint32_t num = 1;
+    for (int i = 0; i < m; i++)
+    {
+        num *= n;
+    }
+    return num;
+}

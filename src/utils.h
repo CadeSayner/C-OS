@@ -15,3 +15,5 @@ struct InterruptRegisters{
 void int32_to_hex_string(uint32_t num, char* hexString);
 
 void printHexInt(uint32_t num);
+
+uint32_t pow(int n, int m);
