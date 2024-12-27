@@ -1,6 +1,7 @@
 #include "keyboard.h"
 #include "stdint.h"
 #include "vga.h"
+#include "io.h"
 /** read_scan_code:
  *  Reads a scan code from the keyboard
  *
@@ -84,9 +85,8 @@ void kbd_handler(struct InterruptRegisters* regs){
             asci_arr[1] = '\0';
             // echo to the "terminal screen"
             print(asci_arr);
-
             // send to buffer
-            add_to_buffer(asci_arr);
+            add_char_to_input_buffer(asci_char);
         }
     }
 }

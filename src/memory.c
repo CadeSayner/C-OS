@@ -31,7 +31,6 @@ void* kmalloc(uint32_t bytes){
     uint32_t next_pwr_2 = next_power_of_2(bytes);
     struct cache_descriptor cache_desc = general_caches[calc_index(next_pwr_2)];
     if(cache_desc.slab_list == 0){
-        print("\n Allocating a slab to the cache\n");
         allocate_new_slab_to_cache(general_caches + calc_index(next_pwr_2));
     }
     struct slab_descriptor* curr = cache_desc.slab_list;

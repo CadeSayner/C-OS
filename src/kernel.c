@@ -4,6 +4,7 @@
 #include "multiboot.h"
 #include "memory.h"
 #include "utils.h"
+#include "io.h"
 
 void kmain(uint32_t magic, struct multiboot_info* bootInfo);
 
@@ -31,8 +32,14 @@ void kmain (uint32_t magic, struct multiboot_info* bootInfo){
     
     initMemory(physicalAllocationStart);
 
-    print("\n\nMemory initialisation complete!");
-    
+    print("\n\nMemory initialisation complete!\n\n");
+
+    // testing kread
+    char* echo = kmalloc(10);
+    echo[9] = '\0';
+    kread(echo, 9);
+    print(echo);
+
     // pass the e_entry and module start and size to a process routine that will create the process
     // descriptor dynamically and then call process start which will then actually execute the slave process
 

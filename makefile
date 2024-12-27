@@ -4,8 +4,8 @@ LFlAGS = -m elf_i386 -T linker.ld -o kernel
 AC = nasm
 AFLAGS = -f elf32 
 
-kernel: kernel.o vga.o boot gdt.o utils.o idt.o memory.o keyboard.o
-	ld $(LFlAGS) obj/boot.o obj/kernel.o obj/vga.o obj/gdts.o obj/gdt.o obj/utils.o obj/idt.o obj/idts.o obj/memory.o obj/keyboard.o
+kernel: kernel.o vga.o boot gdt.o utils.o idt.o memory.o keyboard.o io.o
+	ld $(LFlAGS) obj/boot.o obj/kernel.o obj/vga.o obj/gdts.o obj/gdt.o obj/utils.o obj/idt.o obj/idts.o obj/memory.o obj/keyboard.o obj/io.o
 
 kernel.o: src/kernel.c 
 	$(CC) $(CFLAGS) -c src/kernel.c -o obj/kernel.o
@@ -23,7 +23,10 @@ utils.o : src/utils.c
 	$(CC) $(CFLAGS) -c src/utils.c -o obj/utils.o 
 
 idt.o: src/idt.c 
-	$(CC) $(CFLAGS) -c src/idt.c -o obj/idt.o 
+	$(CC) $(CFLAGS) -c src/idt.c -o obj/idt.o
+
+io.o : src/io.c
+	$(CC) $(CFLAGS) -c src/io.c -o obj/io.o
 
 keyboard.o : src/keyboard.c
 	$(CC) $(CFLAGS) -c src/keyboard.c -o obj/keyboard.o 
