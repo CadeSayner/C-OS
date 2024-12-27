@@ -17,6 +17,16 @@ void Reset(){
     }
 }
 
+void BackSpace(){
+    vga[line*width + column-1] = ' ';
+    if(column == 0){
+        line--;
+        column = width - 1;
+    }else{
+        column--;
+    }
+}
+
 void newLine(){
     if(line < height - 1){
         line++;
@@ -49,6 +59,9 @@ void print(const char* s){
                 break;
             case '\r':
                 column = 0;
+                break;
+            case '\b':
+                BackSpace();
                 break;
             case '\t':
                 if(column == width){

@@ -18,24 +18,13 @@ void initMemory(uint32_t memLow){
    initialAllocationFrame = (memLow / 4096) + 5;
    print("The initial page frame is\n");
    printHexInt(initialAllocationFrame);
+   memset(mmap, 0, sizeof(mmap));
 
    for (uint8_t i = 0; i < 8; i++)
    {
      general_caches[i].size = pow(2, i);
      general_caches[i].slab_list = 0;
    }
-
-   print("\nfirst kmalloc\n");
-   void* first_malloc = kmalloc(31);
-   printHexInt(first_malloc);
-   print("\nsecond kmalloc\n");
-   void* second_malloc = kmalloc(31);
-   printHexInt(second_malloc);
-   kfree(second_malloc, 31);
-   print("\nthird kmalloc\n");
-   printHexInt(kmalloc(31));
-   memset(mmap, 0, sizeof(mmap));
-
 }
 
 void* kmalloc(uint32_t bytes){

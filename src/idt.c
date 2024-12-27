@@ -2,6 +2,7 @@
 #include "vga.h"
 #include "utils.h"
 #include "idt.h"
+#include "keyboard.h"
 
 struct idt_entry_struct idt_entries[256];
 struct idt_ptr_struct idt_ptr;
@@ -18,6 +19,7 @@ void initIdt(){
     outPortB(0x20, 0x11);
     outPortB(0xA0, 0x11);
 
+    // magic sauce?
     outPortB(0x21, 0x20);
     outPortB(0xA1, 0x28);
     outPortB(0x21, 0x04);
@@ -27,6 +29,7 @@ void initIdt(){
     outPortB(0x21, 0x0);
     outPortB(0xA1, 0x0);
 
+    // set the interrupt gates
     setIdtGate(0, (uint32_t)isr0, 0x08, 0x8E);
     setIdtGate(1, (uint32_t)isr1, 0x08, 0x8E);
     setIdtGate(2, (uint32_t)isr2, 0x08, 0x8E);
@@ -60,7 +63,7 @@ void initIdt(){
     setIdtGate(30, (uint32_t)isr30, 0x08, 0x8E);
     setIdtGate(31, (uint32_t)isr31, 0x08, 0x8E);
 
-
+    // end of isr's beginning or irq's
     setIdtGate(32, (uint32_t)irq0, 0x08, 0x8E);
     setIdtGate(33, (uint32_t)irq1, 0x08, 0x8E);
     setIdtGate(34, (uint32_t)irq2, 0x08, 0x8E);
@@ -84,6 +87,11 @@ void initIdt(){
     setIdtGate(177, (uint32_t)isr177, 0x08, 0x8E);
 
     idt_flush((uint32_t)&idt_ptr);
+
+
+    // install the necessary handlers
+    irq_install_handler(1, kbd_handler);
+
 }
 
 void setIdtGate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags){

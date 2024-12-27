@@ -120,7 +120,7 @@ isr_common_stub:
     POPA
     ADD esp, 8 ;pops the variables passed to this routine
     STI
-    IRET
+    IRET ; get back to user or kernel mode depending on when the interrupt occured
 
 extern irq_handler
 irq_common_stub:

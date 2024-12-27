@@ -36,8 +36,8 @@ void kmain (uint32_t magic, struct multiboot_info* bootInfo){
     // pass the e_entry and module start and size to a process routine that will create the process
     // descriptor dynamically and then call process start which will then actually execute the slave process
 
-   
     // create processes here from the multiboot information
+
     for(;;);
 
 

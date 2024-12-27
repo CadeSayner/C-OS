@@ -13,6 +13,15 @@ void outPortB(uint16_t port, uint8_t value){
     asm volatile ("outb %1, %0" : : "dN" (port), "a" (value));
 }
 
+uint8_t inb(uint16_t port) {
+    uint8_t value;
+    __asm__ __volatile__(
+        "inb %1, %0"  // inb instruction
+        : "=a"(value)  // Output: value will be placed in 'value' variable
+        : "d"(port)    // Input: port address
+    );
+    return value;
+}
 
 void int32_to_hex_string(uint32_t num, char* hexString){
     hexString[0] = '0';
