@@ -22,6 +22,8 @@ void allocate_new_slab_to_cache(struct cache_descriptor* cache_desc);
 
 void* kmalloc(uint32_t bytes);
 
+void kfree(void* vaddr, uint16_t size);
+
 uint32_t next_power_of_2(uint32_t n);
 
 void init_slab_descriptor(struct slab_descriptor* slab_desc, uint16_t size, uint32_t first_obj_vaddr);

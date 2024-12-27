@@ -26,13 +26,17 @@ void initMemory(uint32_t memLow){
    }
 
    print("\nfirst kmalloc\n");
-   printHexInt(kmalloc(31));
+   void* first_malloc = kmalloc(31);
+   printHexInt(first_malloc);
    print("\nsecond kmalloc\n");
-   printHexInt(kmalloc(30));
+   void* second_malloc = kmalloc(31);
+   printHexInt(second_malloc);
+   kfree(second_malloc, 31);
+   print("\nthird kmalloc\n");
+   printHexInt(kmalloc(31));
    memset(mmap, 0, sizeof(mmap));
+
 }
-
-
 
 void* kmalloc(uint32_t bytes){
     uint32_t next_pwr_2 = next_power_of_2(bytes);
@@ -61,7 +65,25 @@ void* kmalloc(uint32_t bytes){
     // curr points to the slab descriptor at the end of the list
 }
 
+// frees the memory at vaddr of the provided size
+void kfree(void* vaddr, uint16_t size){
+    uint32_t next_pwr_2 = next_power_of_2(size);
+    // a copy of the cache_desc for the purposes of extracting relevant data later
+    struct cache_descriptor cache_desc = general_caches[calc_index(next_pwr_2)];
 
+    struct slab_descriptor* curr = cache_desc.slab_list;
+    while(curr != 0){
+        for(uint16_t i = 0; i < 4086; i++){
+            if(curr->first_obj_address <= vaddr && vaddr < curr->first_obj_address +  (4086*cache_desc.size)){
+                // the address falls within the range of this slab
+                // now calculate the index within the array
+                uint16_t rm_index = ((uint32_t)vaddr - curr->first_obj_address)/cache_desc.size;
+                curr->objs[rm_index] = 0; // deallocate that object
+            }        
+        }
+        curr = curr->next;
+    }
+}
 
 int calc_index(int pwr2){
     int count = 0;
@@ -87,9 +109,6 @@ uint32_t next_power_of_2(uint32_t n) {
     return n + 1;  // Increment to get the next power of 2
 }
 
-
-
-
 // return the linear address of a page allocated in kernel space
 uint32_t allocPage(){
     for (uint16_t i = 0; i < 30000; i++)
@@ -104,6 +123,14 @@ uint32_t allocPage(){
 // deallocate a page with a specified index
 void dealloc_page_index(uint16_t i){
     mmap[i] = 0;
+}
+
+//deallocate n page frames starting from the frame at some linear vaddr
+void dealloc_n_pages(uint32_t vaddr, uint16_t n){
+    uint16_t initial_frame = (vaddr-0xC0000000)/4096;
+    for(int i = initial_frame; i < i + n; i++){
+        mmap[i] = 0;
+    }
 }
 
 void dealloc_page_vaddr(uint32_t vaddr){
@@ -165,6 +192,3 @@ uint32_t alloc_n_consecutive_pages(uint16_t n){
 void invalidate(uint32_t vaddr){
     asm volatile ("invlpg %0" :: "m"(vaddr));
 }
-
-
-
