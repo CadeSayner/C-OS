@@ -13,6 +13,8 @@ c_code:
 	$(CC) $(CFLAGS) -c src/arch/idt.c -o obj/idt.o
 	$(CC) $(CFLAGS) -c src/lib/io.c -o obj/io.o
 	$(CC) $(CFLAGS) -c src/drivers/keyboard.c -o obj/keyboard.o 
+	$(CC) $(CFLAGS) -c src/mm/pm.c -o obj/pm.o 
+	$(CC) $(CFLAGS) -c src/mm/process.c -o obj/process.o 
 
 asm_code:
 	$(AC) $(AFLAGS) src/arch/boot.s -o obj/boot.o
@@ -20,7 +22,7 @@ asm_code:
 	$(AC) $(AFLAGS) src/arch/idt.s -o obj/idts.o
 
 kernel: asm_code c_code
-	ld $(LFlAGS) obj/boot.o obj/kernel.o obj/vga.o obj/gdts.o obj/gdt.o obj/utils.o obj/idt.o obj/idts.o obj/memory.o obj/keyboard.o obj/io.o
+	ld $(LFlAGS) obj/boot.o obj/kernel.o obj/vga.o obj/gdts.o obj/gdt.o obj/utils.o obj/idt.o obj/idts.o obj/memory.o obj/keyboard.o obj/io.o obj/process.o obj/pm.o
 
 .PHONY: run
 run: kernel

@@ -5,6 +5,7 @@
 #include "memory.h"
 #include "utils.h"
 #include "io.h"
+#include "process.h"
 
 void kmain(uint32_t magic, struct multiboot_info* bootInfo);
 
@@ -29,19 +30,23 @@ void kmain (uint32_t magic, struct multiboot_info* bootInfo){
     struct Elf32_Ehdr* header = (struct Elf32_Ehdr *) modules[0].module_start;
     uint32_t module_entry = header->e_entry;
     uint32_t module_size = modules[0].module_end - modules[1].module_start;
-    
+    uint32_t module_start = modules[0].module_start;
+    uint32_t module_end = modules[0].module_end;
+
     initMemory(physicalAllocationStart);
 
     print("\n\nMemory initialisation complete!\n\n");
 
     // testing kread
-    char* echo = kmalloc(10);
-    echo[9] = '\0';
-    kread(echo, 9);
-    print(echo);
+    // char* echo = kmalloc(10);
+    // echo[9] = '\0';
+    // kread(echo, 9);
+    // print(echo);
 
     // pass the e_entry and module start and size to a process routine that will create the process
     // descriptor dynamically and then call process start which will then actually execute the slave process
+    print("Initialising modules");
+    uint16_t process_id = create_proc(module_entry, module_size, module_start, module_end);
 
     // create processes here from the multiboot information
 
