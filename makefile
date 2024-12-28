@@ -1,40 +1,26 @@
 CC = gcc
-CFLAGS = -m32 -fno-stack-protector -fno-builtin
+CFLAGS = -m32 -fno-stack-protector -fno-builtin -I include
 LFlAGS = -m elf_i386 -T linker.ld -o kernel
 AC = nasm
 AFLAGS = -f elf32 
 
-kernel: kernel.o vga.o boot gdt.o utils.o idt.o memory.o keyboard.o io.o
-	ld $(LFlAGS) obj/boot.o obj/kernel.o obj/vga.o obj/gdts.o obj/gdt.o obj/utils.o obj/idt.o obj/idts.o obj/memory.o obj/keyboard.o obj/io.o
-
-kernel.o: src/kernel.c 
+c_code:
 	$(CC) $(CFLAGS) -c src/kernel.c -o obj/kernel.o
+	$(CC) $(CFLAGS) -c src/drivers/vga.c -o obj/vga.o
+	$(CC) $(CFLAGS) -c src/arch/gdt.c -o obj/gdt.o 
+	$(CC) $(CFLAGS) -c src/mm/memory.c -o obj/memory.o 
+	$(CC) $(CFLAGS) -c src/lib/utils.c -o obj/utils.o 
+	$(CC) $(CFLAGS) -c src/arch/idt.c -o obj/idt.o
+	$(CC) $(CFLAGS) -c src/lib/io.c -o obj/io.o
+	$(CC) $(CFLAGS) -c src/drivers/keyboard.c -o obj/keyboard.o 
 
-vga.o: src/vga.c
-	$(CC) $(CFLAGS) -c src/vga.c -o obj/vga.o
+asm_code:
+	$(AC) $(AFLAGS) src/arch/boot.s -o obj/boot.o
+	$(AC) $(AFLAGS) src/arch/gdt.s -o obj/gdts.o
+	$(AC) $(AFLAGS) src/arch/idt.s -o obj/idts.o
 
-gdt.o : src/gdt.c 
-	$(CC) $(CFLAGS) -c src/gdt.c -o obj/gdt.o 
-
-memory.o : src/memory.c 
-	$(CC) $(CFLAGS) -c src/memory.c -o obj/memory.o 
-
-utils.o : src/utils.c
-	$(CC) $(CFLAGS) -c src/utils.c -o obj/utils.o 
-
-idt.o: src/idt.c 
-	$(CC) $(CFLAGS) -c src/idt.c -o obj/idt.o
-
-io.o : src/io.c
-	$(CC) $(CFLAGS) -c src/io.c -o obj/io.o
-
-keyboard.o : src/keyboard.c
-	$(CC) $(CFLAGS) -c src/keyboard.c -o obj/keyboard.o 
-
-boot: src/boot.s
-	$(AC) $(AFLAGS) src/boot.s -o obj/boot.o
-	$(AC) $(AFLAGS) src/gdt.s -o obj/gdts.o
-	$(AC) $(AFLAGS) src/idt.s -o obj/idts.o
+kernel: asm_code c_code
+	ld $(LFlAGS) obj/boot.o obj/kernel.o obj/vga.o obj/gdts.o obj/gdt.o obj/utils.o obj/idt.o obj/idts.o obj/memory.o obj/keyboard.o obj/io.o
 
 .PHONY: run
 run: kernel
