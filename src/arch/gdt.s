@@ -27,8 +27,9 @@ switch_to_user_mode_process:
     mov   gs, eax
 
     push  dword 0x23
-    push  dword 0xB0000000
+    push  dword (0xB0000000 + 8092)
     pushfd
+    ;or    dword [esp], 0x200 
     push  dword 0x1B
     push  ebx
     iret

@@ -35,8 +35,6 @@ uint16_t create_proc(uint32_t entry, uint32_t size, uint32_t proc_start, uint32_
 void start_process(uint16_t process_id){
     // assume that it is the 0th process for now
     load_page_table((uint32_t)(proc_list->page_dir) - 0xC0000000);
-    print("okay");
-    printHexInt(proc_list->entry_point);
     switch_to_user_mode_process(proc_list->entry_point);
     //switch_to_user_mode();
     // give the page table to the cpu:

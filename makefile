@@ -30,7 +30,7 @@ kernel: asm_code c_code
 run: kernel
 	mv kernel COS/boot/kernel
 	grub-mkrescue -o COS.iso COS/
-	qemu-system-i386 -s -S COS.iso
+	qemu-system-i386  COS.iso
 
 	
 

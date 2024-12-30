@@ -26,12 +26,15 @@ uint32_t* get_page_dir(uint32_t proc_start, uint32_t proc_end){
     }
 
     // map the stack in as well
-    uint32_t stack_start_frame = (alloc_n_consecutive_pages(10)-0xC0000000)/4096;
-    for (int i = 0; i < 10; i++)
+    uint32_t stack_start = alloc_n_consecutive_pages(5)-0xC0000000;
+    uint32_t stack_start_frame = stack_start/4096;
+
+
+    for (int i = 0; i < 5; i++)
     {
-        add_mapping(page_dir, proc_stack_start_page, stack_start_frame+i);
+        add_mapping(page_dir, proc_stack_start_page+i, stack_start_frame+i);
     }
-    
+
     // uint32_t test_address = proc_vaddr_start + 4096;
     // uint32_t page_dir_index = (test_address >> 22);
     // uint32_t table_address = page_dir[page_dir_index];
@@ -41,6 +44,7 @@ uint32_t* get_page_dir(uint32_t proc_start, uint32_t proc_end){
     // at this point the process itself is mapped in, now lets map in the kernel
 
     map_kernel(page_dir);
+    // dump_page_dir(page_dir);
     return page_dir;
 }
 
@@ -51,19 +55,23 @@ void map_kernel(uint32_t* page_dir){
     }
 }
 
+void dump_page_dir(uint32_t* page_dir){
+    print("\n");
+    for(uint16_t i = 0; i < 1024; i++){
+        printHexInt(page_dir[i]);
+        print(", ");
+    }
+}
+
 // add a mapping in the provided page directory that maps from page_num to frame_num
 void add_mapping(uint32_t* page_dir, uint32_t page_num, uint32_t frame_num){
     uint16_t page_dir_index = page_num >> 10;
     if(page_dir[page_dir_index] == 0){
         // then no page table entry exists for the page so add a 4kb aligned pagetable
         uint32_t* page_table = allocPage();
-        printHexInt(page_table);
-        print("\n");
         page_dir[page_dir_index] = ((uint32_t)page_table - 0xC0000000) | 0b111;
-        printHexInt(page_dir[page_dir_index]);
     }
     // at this point we can rest assured that a page table exists
     uint16_t page_table_index = page_num % 1024;
-
     ((uint32_t*)((page_dir[page_dir_index] + 0xC0000000)&(~7)))[page_table_index] = (frame_num << 12) | 0b111;
 }

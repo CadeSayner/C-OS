@@ -21,7 +21,7 @@ void kmain (uint32_t magic, struct multiboot_info* bootInfo){
     print("IDT successfully initialised.\r\n");
     uint32_t mod1 = *(uint32_t*)(bootInfo->mods_addr + 4);
     uint32_t physicalAllocationStart = (mod1 + 0xFFF) & -0xFFF; // just align past the last module that was loaded
-    print("Initialising Memory @ ");
+    print("\nInitialising Memory @ ");
     printHexInt(physicalAllocationStart);
     print(" ...");
 
@@ -33,8 +33,6 @@ void kmain (uint32_t magic, struct multiboot_info* bootInfo){
     uint32_t module_start = modules[0].module_start;
     uint32_t module_end = modules[0].module_end;
 
-    print("entry");
-    printHexInt(module_entry);
     initMemory(physicalAllocationStart);
 
     print("\n\nMemory initialisation complete!\n\n");
@@ -47,10 +45,9 @@ void kmain (uint32_t magic, struct multiboot_info* bootInfo){
 
     // pass the e_entry and module start and size to a process routine that will create the process
     // descriptor dynamically and then call process start which will then actually execute the slave process
-    print("Initialising modules");
+    print("Initialising modules...\n");
     uint16_t process_id = create_proc(module_entry, module_size, module_start, module_end);
-    print(" Sucessfully created process with id ");
-    printHexInt(process_id);
+    print("Starting sysd...\n");
 
     // start sysd
     start_process(process_id);
