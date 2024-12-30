@@ -139,6 +139,13 @@ unsigned char* exception_messages[] = {
 
 void isr_handler(struct InterruptRegisters* regs){
     if(regs->int_no < 32){
+        print("\n\n\n\n");
+        // printHexInt(regs->cr2);
+        // printHexInt(regs->esp);
+        // printHexInt(regs->ebx);
+        printHexInt(regs->esp);
+        printHexInt(regs->ds);
+        
         print(exception_messages[regs->int_no]);
         print("\n");
         print("Exception! System halted");

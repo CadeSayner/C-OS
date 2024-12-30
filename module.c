@@ -1,4 +1,4 @@
 int main(int argc, char const *argv[])
 {
-    return 0;
+    asm volatile("mov $0x12345678, %eax");
 }

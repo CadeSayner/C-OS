@@ -33,6 +33,8 @@ void kmain (uint32_t magic, struct multiboot_info* bootInfo){
     uint32_t module_start = modules[0].module_start;
     uint32_t module_end = modules[0].module_end;
 
+    print("entry");
+    printHexInt(module_entry);
     initMemory(physicalAllocationStart);
 
     print("\n\nMemory initialisation complete!\n\n");
@@ -47,8 +49,11 @@ void kmain (uint32_t magic, struct multiboot_info* bootInfo){
     // descriptor dynamically and then call process start which will then actually execute the slave process
     print("Initialising modules");
     uint16_t process_id = create_proc(module_entry, module_size, module_start, module_end);
+    print(" Sucessfully created process with id ");
+    printHexInt(process_id);
 
-    // create processes here from the multiboot information
+    // start sysd
+    start_process(process_id);
 
     for(;;);
 

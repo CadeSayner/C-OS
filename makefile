@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -m32 -fno-stack-protector -fno-builtin -I include
+CFLAGS = -g -m32 -fno-stack-protector -fno-builtin -I include
 LFlAGS = -m elf_i386 -T linker.ld -o kernel
 AC = nasm
 AFLAGS = -f elf32 
@@ -15,7 +15,9 @@ c_code:
 	$(CC) $(CFLAGS) -c src/drivers/keyboard.c -o obj/keyboard.o 
 	$(CC) $(CFLAGS) -c src/mm/pm.c -o obj/pm.o 
 	$(CC) $(CFLAGS) -c src/mm/process.c -o obj/process.o 
+	$(CC) $(CFLAGS) -c module.c -o module.o 
 
+	
 asm_code:
 	$(AC) $(AFLAGS) src/arch/boot.s -o obj/boot.o
 	$(AC) $(AFLAGS) src/arch/gdt.s -o obj/gdts.o
@@ -28,7 +30,8 @@ kernel: asm_code c_code
 run: kernel
 	mv kernel COS/boot/kernel
 	grub-mkrescue -o COS.iso COS/
-	qemu-system-i386 COS.iso
+	qemu-system-i386 -s -S COS.iso
+
 	
 
 
