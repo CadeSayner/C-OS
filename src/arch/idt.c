@@ -3,9 +3,16 @@
 #include "utils.h"
 #include "idt.h"
 #include "keyboard.h"
+#include "sys_write.h"
 
 struct idt_entry_struct idt_entries[256];
 struct idt_ptr_struct idt_ptr;
+
+// currently supported syscalls
+void *syscalls[16] = {
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0
+};
 
 extern void idt_flush(uint32_t);
 
@@ -92,6 +99,8 @@ void initIdt(){
     // install the necessary handlers
     irq_install_handler(1, kbd_handler);
 
+    install_syscall_handler(1, write);
+
 }
 
 void setIdtGate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags){
@@ -151,6 +160,13 @@ void isr_handler(struct InterruptRegisters* regs){
         print("Exception! System halted");
         for(;;);
     }
+    if(regs->int_no == 128){
+        // we have a syscall
+        void (*handler)(struct InterruptRegisters* regs);
+        handler = syscalls[regs->eax];
+        handler(regs);
+        for(;;);
+    }
 }
 
 void *irq_routines[16] = {
@@ -158,9 +174,15 @@ void *irq_routines[16] = {
     0, 0, 0, 0, 0, 0, 0, 0
 };
 
+
 void irq_install_handler(int irq, void (*handler)(struct InterruptRegisters *r)){
     irq_routines[irq] = handler;
 }
+
+void install_syscall_handler(uint16_t syscall_no, void (*handler)(struct InterruptRegisters *r)){
+    syscalls[syscall_no] = handler;
+}
+
 
 void irq_handler(struct InterruptRegisters* regs){
     void (*handler)(struct InterruptRegisters *regs);

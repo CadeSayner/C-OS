@@ -51,3 +51,37 @@ uint32_t pow(int n, int m){
     }
     return num;
 }
+
+
+void elf32_parse_modules(struct module* processes, struct module_struct* modules, int mod_count){
+    for (uint16_t i = 0; i < mod_count; i++)
+    {
+        // grab module information here for later
+        struct Elf32_Ehdr* header = (struct Elf32_Ehdr *) modules[i].module_start;
+        uint32_t module_entry = header->e_entry;
+        uint32_t module_size = modules[i].module_end - modules[i].module_start;
+        uint32_t module_start = modules[i].module_start;
+        uint32_t module_end = modules[i].module_end;
+
+        struct Elf32_Shdr *section_headers = (struct Elf32_Shdr *)((char *)header + header->e_shoff);
+
+        // Get the section string table offset from the ELF header (it's typically at e_shstrndx)
+        char *section_string_table = (char *)header + section_headers[header->e_shstrndx].sh_offset;
+
+        for (int j = 0; j < header->e_shnum; j++) {
+            // Get the name of the section by looking up the string table entry
+            char *section_name = section_string_table + section_headers[j].sh_name;
+            // Print out the section name and its address
+            if(section_name[1] == 'm' && section_name[2]=='o'){
+                char*module_name = (char*)header + section_headers[j].sh_offset;
+                struct module proc;
+                proc.module_entry = module_entry;
+                proc.module_end = module_end;
+                proc.module_size = module_size;
+                proc.module_start = module_start; 
+                proc.module_name = (char*)((uint32_t)module_name + 0xC0000000);
+                processes[i] = proc;
+            };
+        }
+    }
+}

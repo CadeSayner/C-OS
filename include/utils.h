@@ -1,4 +1,5 @@
 #include "stdint.h"
+#include "multiboot.h"
 #pragma once
 void memset(void *dest, char val, uint32_t count);
 void outPortB(uint16_t port, uint8_t value);
@@ -16,5 +17,7 @@ struct InterruptRegisters{
 void int32_to_hex_string(uint32_t num, char* hexString);
 
 void printHexInt(uint32_t num);
+
+void elf32_parse_modules(struct module* procs, struct module_struct* mods, int mod_count);
 
 uint32_t pow(int n, int m);

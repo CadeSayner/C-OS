@@ -26,6 +26,8 @@ ALIGN 4
 
 section .bss
 ALIGN 16
+
+global stack_top
 stack_bottom:
     RESB 16384 * 8
 stack_top:

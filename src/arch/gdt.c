@@ -9,6 +9,8 @@ struct gdt_entry_struct gdt_entries[6];
 struct gdt_ptr_struct gdt_ptr;
 struct tss_entry_struct tss_entry;
 
+extern char stack_top[];
+
 void initGdt(){
     gdt_ptr.limit = (sizeof(struct gdt_entry_struct) * 6) - 1;
     gdt_ptr.base = (uint32_t)&gdt_entries;
@@ -18,7 +20,7 @@ void initGdt(){
     setGdtGate(2,0,0xFFFFFFFF, 0x92, 0xCF); //Kernel data segment
     setGdtGate(3,0,0xFFFFFFFF, 0xFA, 0xCF); //User code segment
     setGdtGate(4,0,0xFFFFFFFF, 0xF2, 0xCF); //User data segment
-    writeTSS(5,0x10, 0x0);
+    writeTSS(5,0x10, stack_top);
 
     gdt_flush((uint32_t)&gdt_ptr);
     tss_flush();

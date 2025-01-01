@@ -16,8 +16,6 @@ void initMemory(uint32_t memLow){
    invalidate(0);
 
    initialAllocationFrame = (memLow / 4096) + 5;
-   print("The initial page frame is\n");
-   printHexInt(initialAllocationFrame);
    memset(mmap, 0, sizeof(mmap));
 
    for (uint8_t i = 0; i < 8; i++)

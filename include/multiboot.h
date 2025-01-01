@@ -87,3 +87,24 @@ struct module_struct{
     uint32_t module_name;
     uint32_t reserved;
 };
+
+struct module{
+    uint32_t module_entry;
+    uint32_t module_size;
+    uint32_t module_start;
+    uint32_t module_end;
+    char * module_name;
+};
+
+struct Elf32_Shdr{
+    uint32_t   sh_name;       // Name of the section (index into the section header string table)
+    uint32_t   sh_type;       // Type of section (e.g., SHT_PROGBITS, SHT_SYMTAB)
+    uint32_t   sh_flags;      // Section attributes (e.g., SHF_ALLOC, SHF_EXECINSTR)
+    uint32_t   sh_addr;       // Virtual address in memory for the section (if loaded)
+    uint32_t   sh_offset;     // Offset in the file where the section starts
+    uint32_t   sh_size;       // Size of the section in bytes
+    uint32_t   sh_link;       // Link to another section (depends on section type)
+    uint32_t   sh_info;       // Extra information (depends on section type)
+    uint32_t   sh_addralign;  // Alignment of the section in memory
+    uint32_t   sh_entsize;    // Size of each entry (if the section contains a table)
+};

@@ -82,3 +82,13 @@ void print(const char* s){
         s++;
     }
 }
+
+void print_len(const char* s, uint32_t len){
+    for (uint32_t i = 0; i < len; i++)
+    {
+        char character[2];
+        character[0] = s[i];
+        character[1] = '\0';
+        print(character);
+    }
+}
