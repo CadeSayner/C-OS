@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "vga.h"
+#include "memory.h"
 
 void memset(void *dest, char val, uint32_t count){
     char *temp = (char*) dest;
@@ -98,4 +99,29 @@ int32_t parse_uint(const char *s){
         }
     }
     return res;
+}
+
+void print_dec_uint(uint32_t num){
+    if(num == 0){
+        print("0");
+        return;
+    }
+
+    char decimal_digits[] = "0123456789";
+    
+    int length = 0;
+    uint32_t cpy = num;
+
+    while(cpy != 0){
+        cpy/=10;
+        length++;
+    }
+    char *dec_string = kmalloc(length + 1);
+    dec_string[length] = '\0';
+    for (uint16_t i = 0; i < length; i++)
+    {
+        dec_string[length-i-1] = decimal_digits[num % 10];
+        num/=10;
+    }
+    print(dec_string);
 }

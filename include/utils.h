@@ -20,6 +20,8 @@ void printHexInt(uint32_t num);
 
 void elf32_parse_modules(struct module* procs, struct module_struct* mods, int mod_count);
 
+void print_dec_uint(uint32_t num);
+
 int32_t parse_uint(const char* s);
 
 uint32_t pow(int n, int m);
