@@ -85,3 +85,17 @@ void elf32_parse_modules(struct module* processes, struct module_struct* modules
         }
     }
 }
+
+int32_t parse_uint(const char *s){
+    uint32_t res = 0;
+    while(*s){
+        if(*s >= 48 && *s <= 57){
+            int32_t digit = (*s) - 48;
+            res = res*10 + digit;
+            s++;
+        }else{
+            return -1;
+        }
+    }
+    return res;
+}

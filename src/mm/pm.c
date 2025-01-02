@@ -9,24 +9,19 @@ static proc_stack_start_page = 0xB0000000/4096;
 
 // get a page table mapping the process with entry point and starting point into 
 uint32_t* get_page_dir(uint32_t proc_start, uint32_t proc_end){
-    uint32_t* page_dir = kmalloc(1024);
-    memset(page_dir, 0, 1024);
+    uint32_t* page_dir = allocPage();
+    memset(page_dir, 0, 4096);
     uint32_t start_frame = proc_start >> 12;
     uint32_t start_page = proc_vaddr_start >> 12;
     uint32_t end_frame = proc_end >> 12;
     uint32_t num_phys_frames = end_frame - start_frame;
 
     for(uint16_t i=0; i < num_phys_frames; i++){
-        // print("need to map\n");
-        // printHexInt(start_frame + i);
-        // print("\nto page\n");
-        // printHexInt(start_page + i);
-        // print("\n");
         add_mapping(page_dir, start_page+i, start_frame + i);
     }
-
     // map the stack in as well
     uint32_t stack_start = alloc_n_consecutive_pages(5)-0xC0000000;
+
     uint32_t stack_start_frame = stack_start/4096;
 
 
@@ -35,16 +30,7 @@ uint32_t* get_page_dir(uint32_t proc_start, uint32_t proc_end){
         add_mapping(page_dir, proc_stack_start_page+i, stack_start_frame+i);
     }
 
-    // uint32_t test_address = proc_vaddr_start + 4096;
-    // uint32_t page_dir_index = (test_address >> 22);
-    // uint32_t table_address = page_dir[page_dir_index];
-    // uint32_t page_table_index = ((test_address) >> 12)%1024;
-    // uint32_t final_entry = ((uint32_t*)(table_address))[page_table_index];
-    // printHexInt(final_entry);
-    // at this point the process itself is mapped in, now lets map in the kernel
-
     map_kernel(page_dir);
-    // dump_page_dir(page_dir);
     return page_dir;
 }
 
@@ -62,6 +48,7 @@ void dump_page_dir(uint32_t* page_dir){
         print(", ");
     }
 }
+
 
 // add a mapping in the provided page directory that maps from page_num to frame_num
 void add_mapping(uint32_t* page_dir, uint32_t page_num, uint32_t frame_num){

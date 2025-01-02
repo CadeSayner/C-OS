@@ -1,10 +1,12 @@
 #include "vga.h"
+#include "utils.h"
 
 uint16_t column = 0;
 uint16_t line = 0;
 uint16_t* const vga = (uint16_t* const) 0xC00B8000; // Load the address of video memory as a pointer to a 16 bit integer
 const uint16_t defaultColor = (COLOR8_LIGHT_GRAY << 8) | (COLOR8_BLACK << 12);
 uint16_t currentColor = defaultColor;
+
 
 void Reset(){
     line = 0;
@@ -17,11 +19,14 @@ void Reset(){
     }
 }
 
+void vga_set_text_color(uint16_t color){
+    currentColor = (color << 8) | (COLOR8_BLACK << 12);
+}
+
 void BackSpace(){
     vga[line*width + column-1] = ' ';
     if(column == 0){
-        line--;
-        column = width - 1;
+        return;
     }else{
         column--;
     }
@@ -36,6 +41,15 @@ void newLine(){
         scrollUp();
         column = 0;
     }
+}
+
+void set_cursor_position(uint16_t position) {
+    outPortB(VGA_PORT_COMMAND, 0x0F);  // 0x0F is the register for low byte
+    outPortB(VGA_PORT_DATA, position & 0xFF);  // Low byte
+
+    // Set the high byte of the cursor position
+    outPortB(VGA_PORT_COMMAND, 0x0E);  // 0x0E is the register for high byte
+    outPortB(VGA_PORT_DATA, (position >> 8) & 0xFF);  // High byte
 }
 
 void scrollUp(){
@@ -56,12 +70,19 @@ void print(const char* s){
         switch(*s){
             case '\n':
                 newLine();
+                update_cursor();
                 break;
             case '\r':
                 column = 0;
+                update_cursor();
                 break;
             case '\b':
                 BackSpace();
+                update_cursor();
+                break;
+            case '\v':
+                newLine();
+                update_cursor();
                 break;
             case '\t':
                 if(column == width){
@@ -72,15 +93,22 @@ void print(const char* s){
                     vga[line * width + (column++)] = ' ' | currentColor;
                     tabLen --;
                 }
+                update_cursor();
+                break;
             default:
                 if(column == width){
                     newLine();
                 }
                 vga[line * width + (column++)] = *s | currentColor;
+                update_cursor();
                 break;
         }
         s++;
     }
+}
+
+void update_cursor(){
+    set_cursor_position(line*width + column);
 }
 
 void print_len(const char* s, uint32_t len){

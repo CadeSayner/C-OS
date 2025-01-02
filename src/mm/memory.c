@@ -8,7 +8,7 @@ static uint32_t initialAllocationFrame;
 static uint8_t mmap[30000]; //  ~120mb of memory mapped 
 static struct cache_descriptor default_cache;
 
-static struct cache_descriptor general_caches[8];
+static struct cache_descriptor general_caches[12];
 
 void initMemory(uint32_t memLow){
     // invalidate the first PTE, since we no longer need it
@@ -18,7 +18,7 @@ void initMemory(uint32_t memLow){
    initialAllocationFrame = (memLow / 4096) + 5;
    memset(mmap, 0, sizeof(mmap));
 
-   for (uint8_t i = 0; i < 8; i++)
+   for (uint8_t i = 0; i < 11; i++)
    {
      general_caches[i].size = pow(2, i);
      general_caches[i].slab_list = 0;
@@ -33,7 +33,7 @@ void* kmalloc(uint32_t bytes){
     }
     struct slab_descriptor* curr = cache_desc.slab_list;
     while(curr != 0){
-        for(uint16_t i = 0; i < 4086; i++){
+        for(uint16_t i = 0; i < 200; i++){
             if((curr->objs)[i] == 0){
                 (curr->objs)[i] = 1;
                 // return the address that we need here
@@ -59,8 +59,8 @@ void kfree(void* vaddr, uint16_t size){
 
     struct slab_descriptor* curr = cache_desc.slab_list;
     while(curr != 0){
-        for(uint16_t i = 0; i < 4086; i++){
-            if(curr->first_obj_address <= vaddr && vaddr < curr->first_obj_address +  (4086*cache_desc.size)){
+        for(uint16_t i = 0; i < 200; i++){
+            if(curr->first_obj_address <= vaddr && vaddr < curr->first_obj_address +  (200*cache_desc.size)){
                 // the address falls within the range of this slab
                 // now calculate the index within the array
                 uint16_t rm_index = ((uint32_t)vaddr - curr->first_obj_address)/cache_desc.size;
@@ -128,7 +128,7 @@ void allocate_new_slab_to_cache(struct cache_descriptor * cache_desc){
     struct slab_descriptor* cur = cache_desc->slab_list;
     // cur points to the last slab descriptor that we have
     // create a new slab descriptor by first requesting memory from the allocator and then using the first page for the slab_descriptor
-    struct slab_descriptor* new_slab = alloc_n_consecutive_pages(((cache_desc->size * 4086) / 4096) + 2);
+    struct slab_descriptor* new_slab = alloc_n_consecutive_pages(((cache_desc->size * 200) / 4096) + 2);
     // printHexInt(new_slab);
     init_slab_descriptor(new_slab, cache_desc->size, (uint32_t)new_slab + 4096);
     if(cache_desc->slab_list == 0){
@@ -144,7 +144,7 @@ void allocate_new_slab_to_cache(struct cache_descriptor * cache_desc){
 void init_slab_descriptor(struct slab_descriptor* slab_desc, uint16_t size, uint32_t first_obj_vaddr){
     slab_desc->first_obj_address = first_obj_vaddr;
     slab_desc->obj_size = size;
-    memset(slab_desc->objs, 0, slab_desc->obj_size * 4086); // initialise the slab array to a bunch of zeroes
+    memset(slab_desc->objs, 0, slab_desc->obj_size * 200); // initialise the slab array to a bunch of zeroes
     slab_desc->next = 0; // point nowhere initially
 }
 

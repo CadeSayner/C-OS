@@ -1,8 +1,8 @@
-char modname[] __attribute__((section(".modname"), aligned(4))) = "hello world module";
+char modname[] __attribute__((section(".modname"), aligned(4))) = "hw_module";
 
 int main()
 {
-    asm volatile("mov $0x12345678, %eax");
+    asm volatile("mov $0x1234, %eax");
     char input[] = "hello world";
     syscall(1, 1, input, 12);
     while(1==1){}
