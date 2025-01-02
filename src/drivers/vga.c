@@ -10,7 +10,7 @@ uint16_t currentColor = defaultColor;
 
 void Reset(){
     line = 0;
-    column = 0;
+    column = margin;
     currentColor - defaultColor;
     for (uint16_t y = 0; y < height; y++){
         for (uint16_t x = 0; x < width; x++){
@@ -25,7 +25,7 @@ void vga_set_text_color(uint16_t color){
 
 void BackSpace(){
     vga[line*width + column-1] = ' ';
-    if(column == 0){
+    if(column == margin){
         return;
     }else{
         column--;
@@ -35,11 +35,11 @@ void BackSpace(){
 void newLine(){
     if(line < height - 1){
         line++;
-        column = 0;
+        column = margin;
     }
     else{
         scrollUp();
-        column = 0;
+        column = margin;
     }
 }
 

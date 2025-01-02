@@ -20,7 +20,7 @@
 
 #define width 80
 #define height 25
-
+#define margin 2
 #define VGA_PORT_COMMAND 0x3D4
 #define VGA_PORT_DATA 0x3D5
 

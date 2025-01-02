@@ -16,9 +16,6 @@ c_code:
 	$(CC) $(CFLAGS) -c src/drivers/keyboard.c -o obj/keyboard.o 
 	$(CC) $(CFLAGS) -c src/mm/pm.c -o obj/pm.o 
 	$(CC) $(CFLAGS) -c src/mm/process.c -o obj/process.o 
-	$(CC) $(CFLAGS) -c hw_module.c -o hw_module.o 
-	$(CC) $(CFLAGS) -c module_2.c -o module_2.o 
-	$(CC) $(CFLAGS) -c another.c -o another.o 
 	$(CC) $(CFLAGS) -c src/syscalls/sys_write.c -o obj/sys_write.o 
 	$(CC) $(CFLAGS) -c src/syscalls/sys_read.c -o obj/sys_read.o 
 	
