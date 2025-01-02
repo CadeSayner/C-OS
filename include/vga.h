@@ -1,7 +1,6 @@
 #pragma once
 #include "stdint.h"
 
-
 #define COLOR8_BLACK        0
 #define COLOR8_BLUE         1
 #define COLOR8_GREEN        2

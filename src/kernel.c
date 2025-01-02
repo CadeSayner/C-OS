@@ -28,18 +28,16 @@ void kmain (uint32_t magic, struct multiboot_info* bootInfo){
     // get module information from multiboot
     struct module_struct* modules = (struct module_struct*)(bootInfo->mods_addr);
 
-    uint32_t mod1 = *(uint32_t*)(bootInfo->mods_addr + 4*(bootInfo->mods_count));
-    uint32_t physicalAllocationStart = (mod1 + 0xFFF) & -0xFFF; // just align past the last module that was loaded
+    uint32_t physicalAllocationStart;
 
     struct module processes[100]; // maximum of 100 concurrent processes allowed in the system, should be defined in a macro rather
     memset(processes, 0, sizeof(processes));
     elf32_parse_modules(processes, modules, bootInfo->mods_count);
-    
     initMemory(physicalAllocationStart);
-
     for (uint16_t i = 0; i < 100; i++)
     {
         if(processes[i].module_start == 0){
+            physicalAllocationStart = (processes[i-1].module_end + 0xFFF) & -0xFFF + 0x1000;
             break;
         }
         uint16_t process_id = create_proc(processes[i].module_entry, processes[i].module_size, processes[i].module_start, processes[i].module_end);
