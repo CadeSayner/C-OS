@@ -1,13 +1,3 @@
-char modname[] __attribute__((section(".modname"), aligned(4))) = "hw_module";
-
-int main()
-{
-    asm volatile("mov $0x1234, %eax");
-    char input[] = "hello world";
-    syscall(1, 1, input, 12);
-    while(1==1){}
-    return 0;
-}
 
 void syscall(int syscall_number, int arg1, int arg2, int arg3) {
     int result;
@@ -20,5 +10,3 @@ void syscall(int syscall_number, int arg1, int arg2, int arg3) {
           "d" (arg3)
     );
 }
-
-

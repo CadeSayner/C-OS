@@ -25,6 +25,7 @@
 #define VGA_PORT_DATA 0x3D5
 
 void print(const char* s);
+void print_len(const char* s, uint32_t len);
 void vga_set_text_color(uint16_t color);
 void scrollUp();
 void newLine();

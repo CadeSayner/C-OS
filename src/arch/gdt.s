@@ -29,11 +29,10 @@ switch_to_user_mode_process:
     push  dword 0x23
     push  dword (0xB0000000 + 8092)
     pushfd
-    ;or    dword [esp], 0x200 
+    or    dword [esp], 0x200 
     push  dword 0x1B
     push  ebx
     iret
-
 
 load_page_table:
     mov eax, [esp+4]

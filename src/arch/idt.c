@@ -4,6 +4,7 @@
 #include "idt.h"
 #include "keyboard.h"
 #include "sys_write.h"
+#include "sys_read.h"
 
 struct idt_entry_struct idt_entries[256];
 struct idt_ptr_struct idt_ptr;
@@ -100,7 +101,7 @@ void initIdt(){
     irq_install_handler(1, kbd_handler);
 
     install_syscall_handler(1, write);
-
+    install_syscall_handler(0, read);
 }
 
 void setIdtGate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags){
@@ -165,7 +166,6 @@ void isr_handler(struct InterruptRegisters* regs){
         void (*handler)(struct InterruptRegisters* regs);
         handler = syscalls[regs->eax];
         handler(regs);
-        for(;;);
     }
 }
 

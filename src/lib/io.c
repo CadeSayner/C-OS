@@ -30,6 +30,9 @@ void add_char_to_input_buffer(uint8_t chr){
 
 // read bytes bytes from std input buffer
 void kread(uint8_t *buf, int bytes){
+   // allow interrupts
+   asm volatile("sti");
+   
    while(line[0] == 0){}
    // line is populated so we can now write the buffer passed to us
    for (uint16_t i = 0; i < bytes; i++)
