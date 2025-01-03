@@ -116,8 +116,15 @@ isr_common_stub:
     MOV es, bx
     MOV fs, bx
     MOV gs, bx
+    pop edi       
+    pop esi       
+    pop ebp       
+    add esp, 4 ; skip esp
+    pop ebx       
+    pop edx      
+    pop ecx       
+    add esp, 4 ; skip eax as well
 
-    POPA
     ADD esp, 8 ;pops the variables passed to this routine
     STI
     IRET ; get back to user or kernel mode depending on when the interrupt occured

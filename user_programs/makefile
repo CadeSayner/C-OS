@@ -6,5 +6,5 @@ c_code:
 	$(CC) $(CFLAGS) -c pi_calculator.c -o pi_calculator.o
 
 elf_file:
-	ld -m elf_i386 -o module2.elf module_2.o -L../libc -l:libc.a -e main2
+	ld -m elf_i386 -o hello.elf hello.o -L../libc -l:libc.a -e main
 

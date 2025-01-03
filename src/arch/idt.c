@@ -5,14 +5,20 @@
 #include "keyboard.h"
 #include "sys_write.h"
 #include "sys_read.h"
+#include "brk.h"
 
 struct idt_entry_struct idt_entries[256];
 struct idt_ptr_struct idt_ptr;
 
 // currently supported syscalls
-void *syscalls[16] = {
+uint32_t *syscalls[] = {
     0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
 };
 
 extern void idt_flush(uint32_t);
@@ -102,6 +108,7 @@ void initIdt(){
 
     install_syscall_handler(1, write);
     install_syscall_handler(0, read);
+    install_syscall_handler(45, brk);
 }
 
 void setIdtGate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags){
@@ -147,7 +154,7 @@ unsigned char* exception_messages[] = {
     "Reserved",
 };
 
-void isr_handler(struct InterruptRegisters* regs){
+uint32_t isr_handler(struct InterruptRegisters* regs){
     if(regs->int_no < 32){
         print("\n\n\n\n");
         // printHexInt(regs->cr2);
@@ -166,6 +173,18 @@ void isr_handler(struct InterruptRegisters* regs){
         void (*handler)(struct InterruptRegisters* regs);
         handler = syscalls[regs->eax];
         handler(regs);
+        uint32_t eax_value;
+         asm volatile (
+        "movl %%eax, %0"   // Move the value of EAX into the C variable
+        : "=r" (eax_value) // Output operand: the C variable eax_value
+        :                  // No input operands
+        : "eax"            // Clobber list: indicate that EAX is used
+        );
+        if(regs->eax == 45){
+            return eax_value;
+        }
+        return regs->eax;
+
     }
 }
 

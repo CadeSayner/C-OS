@@ -1,7 +1,7 @@
 #include "sys_write.h"
 #include "vga.h";
 
-void write(struct InterruptRegisters *regs){
+uint32_t write(struct InterruptRegisters *regs){
     const uint16_t file_descriptor  = regs->ebx;
     const void *buf = regs->ecx;
     const uint32_t len = regs->edx;

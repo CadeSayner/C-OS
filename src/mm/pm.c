@@ -24,7 +24,6 @@ uint32_t* get_page_dir(uint32_t proc_start, uint32_t proc_end){
 
     uint32_t stack_start_frame = stack_start/4096;
 
-
     for (int i = 0; i < 5; i++)
     {
         add_mapping(page_dir, proc_stack_start_page+i, stack_start_frame+i);

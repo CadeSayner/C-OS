@@ -1,5 +1,5 @@
 
-void syscall(int syscall_number, int arg1, int arg2, int arg3) {
+int syscall(int syscall_number, int arg1, int arg2, int arg3) {
     int result;
     asm volatile (
         "int $128"              // Trigger interrupt vector 127
@@ -9,4 +9,5 @@ void syscall(int syscall_number, int arg1, int arg2, int arg3) {
           "c" (arg2),
           "d" (arg3)
     );
+    return result;
 }

@@ -1,3 +1,3 @@
 #include "utils.h"
 
-void write(struct InterruptRegisters *regs);
+uint32_t write(struct InterruptRegisters *regs);
