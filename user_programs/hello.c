@@ -26,7 +26,10 @@ int main()
     int initial_brk = brk(0);
     printHexInt(initial_brk);
     if(brk((void*)(initial_brk + 0x1000))){
-        printHexInt (brk(0));
+        char* s = (char *)(brk(0) - 100);
+        s[0] = '1';
+        s[1] = '\0';
+        print(s);
     }else{
         print("failure");
     }

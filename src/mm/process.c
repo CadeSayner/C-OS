@@ -23,6 +23,7 @@ uint16_t create_proc(uint32_t entry, uint32_t size, uint32_t proc_start, uint32_
     uint32_t heap_start = proc_vaddr_start;
     heap_start += (size+ 0x1000 + 0xFFF);
     heap_start &= ~0xFFF;
+
     proc->sbrk = heap_start;
     proc->brk = heap_start;
     // printHexInt(proc->sbrk);
@@ -53,6 +54,18 @@ uint32_t get_current_process_brk(){
     uint32_t index = 0;
     while(!get_process_ptr(index)->status){index++;}
     return get_process(index).brk;
+}
+
+uint32_t get_current_process_sbrk(){
+    uint32_t index = 0;
+    while(!get_process_ptr(index)->status){index++;}
+    return get_process(index).sbrk;
+}
+
+uint32_t get_current_process_page_dir(){
+    uint32_t index = 0;
+    while(!get_process_ptr(index)->status){index++;}
+    return get_process(index).page_dir;
 }
 
 uint32_t set_current_process_brk(uint32_t vaddr){

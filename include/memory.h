@@ -5,6 +5,7 @@ void dealloc_page_index(uint16_t);
 void dealloc_page_vaddr(uint32_t);
 uint32_t allocPage(void);
 uint32_t alloc_n_consecutive_pages(uint16_t);
+void invalidate(uint32_t vaddr);
 
 struct cache_descriptor{
     struct slab_descriptor *slab_list;

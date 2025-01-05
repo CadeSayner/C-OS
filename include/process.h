@@ -5,6 +5,9 @@ void start_process(uint16_t id);
 
 uint32_t get_current_process_brk();
 uint32_t set_current_process_brk();
+uint32_t get_current_process_sbrk();
+uint32_t get_current_process_page_dir();
+
 
 struct process{
     uint16_t id;

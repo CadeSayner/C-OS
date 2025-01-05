@@ -126,8 +126,15 @@ isr_common_stub:
     add esp, 4 ; skip eax as well
 
     ADD esp, 8 ;pops the variables passed to this routine
+    cmp DWORD [esp], 0x00000006
+    je align_stack
     STI
     IRET ; get back to user or kernel mode depending on when the interrupt occured
+
+align_stack:
+    ADD esp, 4
+    STI
+    IRET
 
 extern irq_handler
 irq_common_stub:

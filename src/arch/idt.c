@@ -6,6 +6,7 @@
 #include "sys_write.h"
 #include "sys_read.h"
 #include "brk.h"
+#include "pm.h"
 
 struct idt_entry_struct idt_entries[256];
 struct idt_ptr_struct idt_ptr;
@@ -156,13 +157,11 @@ unsigned char* exception_messages[] = {
 
 uint32_t isr_handler(struct InterruptRegisters* regs){
     if(regs->int_no < 32){
-        print("\n\n\n\n");
-        // printHexInt(regs->cr2);
-        // printHexInt(regs->esp);
-        // printHexInt(regs->ebx);
-        printHexInt(regs->esp);
-        printHexInt(regs->ds);
-        
+        if(regs->int_no == 14){
+            // we have a page fault
+            page_fault_handler(regs->cr2);
+            return regs->eax;
+        }
         print(exception_messages[regs->int_no]);
         print("\n");
         print("Exception! System halted");
