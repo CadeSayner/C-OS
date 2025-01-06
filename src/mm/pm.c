@@ -9,8 +9,14 @@ static uint32_t proc_vaddr_start_ = 0x08048000;
 static proc_stack_start = 0xB0000000;
 static proc_stack_start_page = 0xB0000000/4096;
 
+uint32_t get_physical_address_(uint32_t* page_dir, uint32_t vaddr){
+    uint32_t page_dir_index = vaddr >> 22;
+    uint32_t page_table_index = (vaddr >> 12) % 1024;
+    //printHexInt(((uint32_t*)((page_dir[page_dir_index] & (~7)) + 0xC0000000)));
+    return ((uint32_t*)((page_dir[page_dir_index] & (~7)) + 0xC0000000))[page_table_index];
+}
 // get a page table mapping the process with entry point and starting point into 
-uint32_t* get_page_dir(uint32_t proc_start, uint32_t proc_end){
+uint32_t* get_page_dir(uint32_t proc_start, uint32_t proc_end, uint32_t data_start, uint32_t data_offset){
     uint32_t* page_dir = allocPage();
     memset(page_dir, 0, 4096);
     uint32_t start_frame = proc_start >> 12;
@@ -32,6 +38,10 @@ uint32_t* get_page_dir(uint32_t proc_start, uint32_t proc_end){
     }
 
     map_kernel(page_dir);
+
+    // TODO: This assumes the data segment is < 4KB obviously not true in general
+    add_mapping(page_dir, data_start >> 12, start_frame + (data_offset >> 12));
+
     return page_dir;
 }
 
@@ -50,12 +60,6 @@ void dump_page_dir(uint32_t* page_dir){
     }
 }
 
-uint32_t get_physical_address_(uint32_t* page_dir, uint32_t vaddr){
-    uint32_t page_dir_index = vaddr >> 22;
-    uint32_t page_table_index = (vaddr >> 12) % 1024;
-    //printHexInt(((uint32_t*)((page_dir[page_dir_index] & (~7)) + 0xC0000000)));
-    return ((uint32_t*)((page_dir[page_dir_index] & (~7)) + 0xC0000000))[page_table_index];
-}
 
 void page_fault_handler(uint32_t fault_vaddr){
     if(fault_vaddr <= get_current_process_brk() && fault_vaddr >= get_current_process_sbrk()){

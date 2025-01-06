@@ -68,10 +68,15 @@ void elf32_parse_modules(struct module* processes, struct module_struct* modules
 
         // Get the section string table offset from the ELF header (it's typically at e_shstrndx)
         char *section_string_table = (char *)header + section_headers[header->e_shstrndx].sh_offset;
-
+        uint32_t data_start;
+        uint32_t data_offset;
         for (int j = 0; j < header->e_shnum; j++) {
             // Get the name of the section by looking up the string table entry
             char *section_name = section_string_table + section_headers[j].sh_name;
+            if(section_name[1]=='d' && section_name[2]=='a'){
+                data_start = section_headers[j].sh_addr;
+                data_offset = section_headers[j].sh_offset;
+            }
             // Print out the section name and its address
             if(section_name[1] == 'm' && section_name[2]=='o'){
                 char*module_name = (char*)header + section_headers[j].sh_offset;
@@ -84,6 +89,8 @@ void elf32_parse_modules(struct module* processes, struct module_struct* modules
                 processes[i] = proc;
             };
         }
+        processes[i].data_start = data_start;
+        processes[i].data_offset = data_offset;
     }
 }
 
@@ -106,9 +113,7 @@ void print_dec_uint(uint32_t num){
         print("0");
         return;
     }
-
     char decimal_digits[] = "0123456789";
-    
     int length = 0;
     uint32_t cpy = num;
 

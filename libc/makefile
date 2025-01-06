@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -m32 -nostdlib -fno-builtin -ffreestanding
+CFLAGS = -g -O0 -m32 -fno-stack-protector -fno-builtin
 
 all: libc.a
 

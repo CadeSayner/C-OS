@@ -46,7 +46,7 @@ void kmain (uint32_t magic, struct multiboot_info* bootInfo){
         if(processes[i].module_start == 0){
             break;
         }
-        uint16_t process_id = create_proc(processes[i].module_entry, processes[i].module_size, processes[i].module_start, processes[i].module_end);
+        uint16_t process_id = create_proc(processes[i].module_entry, processes[i].module_size, processes[i].module_start, processes[i].module_end, processes[i].data_start, processes[i].data_offset);
     }
 
     terminal_start(processes);

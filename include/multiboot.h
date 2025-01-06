@@ -93,7 +93,10 @@ struct module{
     uint32_t module_size;
     uint32_t module_start;
     uint32_t module_end;
+    uint32_t data_start;
+    uint32_t data_offset;
     char * module_name;
+
 };
 
 struct Elf32_Shdr{

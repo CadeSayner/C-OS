@@ -1,8 +1,8 @@
 #include "syscalls.h"
 #include "stdio.h"
+#include "malloc.h"
 
 char modname[] __attribute__((section(".modname"), aligned(4))) = "hello";
-
 void int32_to_hex_string(int num, char* hexString);
 void printHexInt(int num){
     char str[] = "           ";
@@ -24,18 +24,14 @@ int main()
 {
     print("Hello world!\n");
     int initial_brk = brk(0);
-    printHexInt(initial_brk);
-    if(brk((void*)(initial_brk + 0x1000))){
-        char* s = (char *)(brk(0) - 100);
-        s[0] = '1';
-        s[1] = '\0';
-        print(s);
-    }else{
-        print("failure");
-    }
-    char answer[] = "               ";
-    read(answer, 15);
-    print(answer);
+    printHexInt(malloc(4));
+    printHexInt(malloc(4));
     while(1==1){}
     return 0;
+    // print("Hello world!\n");
+    // print("bye");
+    // // printHexInt(malloc(4)); 
+    // // printHexInt(malloc(4));
+    // while(1==1){}
+    // return 0;
 }

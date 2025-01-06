@@ -9,8 +9,8 @@ static int no_of_processes = 0;
 extern void switch_to_user_mode_process(uint32_t e_entry);
 
 // creates a process and returns the process id
-uint16_t create_proc(uint32_t entry, uint32_t size, uint32_t proc_start, uint32_t proc_end){
-    uint32_t* page_dir =  get_page_dir(proc_start, proc_end);
+uint16_t create_proc(uint32_t entry, uint32_t size, uint32_t proc_start, uint32_t proc_end, uint32_t data_start, uint32_t data_offset){
+    uint32_t* page_dir =  get_page_dir(proc_start, proc_end, data_start, data_offset);
     struct process* proc = kmalloc(sizeof(struct process));
 
     // initialise the new process struct

@@ -96,7 +96,6 @@ void initIdt(){
     setIdtGate(46, (uint32_t)irq14, 0x08, 0x8E);
     setIdtGate(47, (uint32_t)irq15, 0x08, 0x8E);
 
-
     // system calls
     setIdtGate(128, (uint32_t)isr128, 0x08, 0x8E);
     setIdtGate(177, (uint32_t)isr177, 0x08, 0x8E);
@@ -183,7 +182,6 @@ uint32_t isr_handler(struct InterruptRegisters* regs){
             return eax_value;
         }
         return regs->eax;
-
     }
 }
 
