@@ -25,16 +25,26 @@ void* malloc(int bytes){
     if(blk_hd == 1){
         // this is all a bunch of bs to skirt around mapping in bss
         cur_brk = brk(0);
-        return allocate_block(bytes, 0);
+        int block_start = (int)allocate_block(bytes, 0);
+        blk_hd = block_start - sizeof(struct Block);
+        return block_start;
     }
     else{
         struct Block* iter = blk_hd;
         while(iter->next != 0){
-            if(iter->size == bytes){
+            if(iter->size == bytes && iter->free == 0){
+               iter->free = 1;
                return (void*)((int)iter + sizeof(struct Block));
             }
             iter = iter->next;
         }
+
+        //also check the last one for a match
+        if(iter->size == bytes && iter->free == 0){
+            iter->free = 1;
+            return (void*)((int)iter + sizeof(struct Block));
+        }
+
         // at the end of the list we can add it to the last block
         return allocate_block(bytes, iter);
     }
@@ -65,4 +75,17 @@ void init_blk(struct Block* blk, int size, int free, struct Block* next){
     blk->size = size;
     blk->free = free;
     blk->next = next;
+}
+
+// free a block of memory at addr
+void free(void* addr){
+    struct Block* iter = blk_hd;
+    
+    while(iter != 0){
+        if((int)iter + sizeof(struct Block) == (int)addr){
+            iter->free = 0;
+            return;
+        }
+        iter = iter->next;
+    }
 }

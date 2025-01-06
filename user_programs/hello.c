@@ -24,8 +24,21 @@ int main()
 {
     print("Hello world!\n");
     int initial_brk = brk(0);
+    char* hello = malloc(4);
+    print("first alloc");
+    printHexInt((int)hello);
+    char *second = malloc(4);
+    print("second alloc");
+    printHexInt((int)second);
+    char *third = malloc(4);
+    print("third alloc");
+    printHexInt((int)third);
+    free(second);
+    print("fourth alloc\n");
     printHexInt(malloc(4));
-    printHexInt(malloc(4));
+    char *other = malloc(4);
+    printHexInt((int)other);
+    
     while(1==1){}
     return 0;
     // print("Hello world!\n");
