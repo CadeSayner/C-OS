@@ -31,3 +31,4 @@ void scrollUp();
 void newLine();
 void Reset();
 void BackSpace();
+void print_char_at(char chr, int column, int row);

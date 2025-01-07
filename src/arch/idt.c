@@ -110,6 +110,8 @@ void initIdt(){
     install_syscall_handler(1, write);
     install_syscall_handler(0, read);
 
+    install_syscall_handler(41, reset_screen);
+    install_syscall_handler(42, sys_write_char_at);
     install_syscall_handler(43, update_echo);
     install_syscall_handler(44, sys_get);
     install_syscall_handler(45, brk);

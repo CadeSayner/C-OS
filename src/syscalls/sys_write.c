@@ -21,3 +21,14 @@ void update_echo(struct InterruptRegisters *regs){
         disable_echoing();
     }
 }
+
+void reset_screen(struct InterruptRegisters *regs){
+    Reset();
+}
+void sys_write_char_at(struct InterruptRegisters *regs){
+    char chr = regs->ebx;
+    int x = regs->ecx;
+    int y = regs->edx;
+    print_char_at(chr, x, y);
+}
+

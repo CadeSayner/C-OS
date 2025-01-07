@@ -23,6 +23,11 @@ void vga_set_text_color(uint16_t color){
     currentColor = (color << 8) | (COLOR8_BLACK << 12);
 }
 
+void print_char_at(char chr, int column, int row){
+    
+    vga[row*width + column] = chr | defaultColor;
+}
+
 void BackSpace(){
     vga[line*width + column-1] = ' ';
     if(column == margin){
