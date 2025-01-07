@@ -17,7 +17,8 @@ c_code:
 	$(CC) $(CFLAGS) -c src/mm/pm.c -o obj/pm.o 
 	$(CC) $(CFLAGS) -c src/mm/process.c -o obj/process.o 
 	$(CC) $(CFLAGS) -c src/syscalls/sys_write.c -o obj/sys_write.o 
-	$(CC) $(CFLAGS) -c src/syscalls/sys_read.c -o obj/sys_read.o 
+	$(CC) $(CFLAGS) -c src/syscalls/sys_read.c -o obj/sys_read.o
+	$(CC) $(CFLAGS) -c src/syscalls/sys_get.c -o obj/sys_get.o
 	$(CC) $(CFLAGS) -c src/syscalls/brk.c -o obj/brk.o 
 	
 asm_code:
@@ -26,7 +27,7 @@ asm_code:
 	$(AC) $(AFLAGS) src/arch/idt.s -o obj/idts.o
 
 kernel: asm_code c_code
-	ld $(LFlAGS) obj/boot.o obj/kernel.o obj/vga.o obj/gdts.o obj/gdt.o obj/utils.o obj/idt.o obj/idts.o obj/memory.o obj/keyboard.o obj/io.o obj/process.o obj/pm.o obj/sys_read.o obj/sys_write.o obj/terminal.o obj/brk.o
+	ld $(LFlAGS) obj/boot.o obj/kernel.o obj/vga.o obj/gdts.o obj/gdt.o obj/utils.o obj/idt.o obj/idts.o obj/memory.o obj/keyboard.o obj/io.o obj/process.o obj/pm.o obj/sys_read.o obj/sys_write.o obj/terminal.o obj/brk.o obj/sys_get.o
 
 .PHONY: run
 run: kernel

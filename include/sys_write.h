@@ -1,3 +1,4 @@
 #include "utils.h"
 
 uint32_t write(struct InterruptRegisters *regs);
+void update_echo(struct InterruptRegisters *regs);

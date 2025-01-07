@@ -51,11 +51,20 @@ char keymap[] = {
 
 };
 
+bool echoing = true;
 bool shift = false;
 
 uint8_t read_scan_code(void)
 {
     return inb(KBD_DATA_PORT);
+}
+
+void enable_echoing(){
+    echoing = true;
+}
+
+void disable_echoing(){
+    echoing = false;
 }
 
 uint8_t read_keyboard_status(void){
@@ -95,7 +104,9 @@ void kbd_handler(struct InterruptRegisters* regs){
             asci_arr[0] = asci_char;
             asci_arr[1] = '\0';
             // echo to the "terminal screen"
-            print(asci_arr);
+            if(echoing){
+                print(asci_arr);
+            }
             // send to buffer
             add_char_to_input_buffer(asci_char);
         }

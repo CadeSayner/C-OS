@@ -2,7 +2,6 @@
 #include "utils.h"
 
 static uint8_t buffer[4096];
-
 // represents a line of input after enter was pressed
 static uint8_t line[4096];
 
@@ -10,6 +9,12 @@ uint16_t curr_position = 0;
 
 void initIO(){
     reset_input_buffer();
+}
+
+char get_char(){
+    char latest_press = buffer[0];
+    reset_input_buffer();
+    return latest_press;
 }
 
 void cpy_buffer_to_line(){

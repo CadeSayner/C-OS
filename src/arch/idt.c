@@ -5,6 +5,7 @@
 #include "keyboard.h"
 #include "sys_write.h"
 #include "sys_read.h"
+#include "sys_get.h"
 #include "brk.h"
 #include "pm.h"
 
@@ -108,6 +109,9 @@ void initIdt(){
 
     install_syscall_handler(1, write);
     install_syscall_handler(0, read);
+
+    install_syscall_handler(43, update_echo);
+    install_syscall_handler(44, sys_get);
     install_syscall_handler(45, brk);
 }
 
@@ -178,7 +182,7 @@ uint32_t isr_handler(struct InterruptRegisters* regs){
         :                  // No input operands
         : "eax"            // Clobber list: indicate that EAX is used
         );
-        if(regs->eax == 45){
+        if(regs->eax == 45 || regs->eax == 44){
             return eax_value;
         }
         return regs->eax;
