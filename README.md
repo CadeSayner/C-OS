@@ -47,12 +47,14 @@ C-OS is a simple operating system built from scratch, written in C and x86.
 
 ### Example Modules
 
--C-OS includes example userland modules to demonstrate the functionality of the operating system, system calls, and the libc implementation:
+C-OS includes example userland modules to demonstrate the functionality of the operating system, system calls, and the libc implementation:
 
--Hello World: A simple program that prints "Hello, World!" to the screen, showcasing the use of the `write` system call through the libc wrapper and the `print` method.
+###Hello World: 
+A simple program that prints "Hello, World!" to the screen, showcasing the use of the `write` system call through the libc wrapper and the `print` method.
 
 
--Snake Game: A fully functional implementation of the classic Snake game. This module utilizes `malloc` for dynamic memory allocation, `write_char_at()` for screen output, and `get()` to read character input. The game serves as a comprehensive demonstration of kernel`s capabilities.
+###Snake Game: 
+A fully functional implementation of the classic Snake game. This module utilizes `malloc` for dynamic memory allocation, `write_char_at()` for screen output, and `get()` to read character input. The game serves as a comprehensive demonstration of kernel`s capabilities.
 
 These modules illustrate how developers can build applications for C-OS.
 
