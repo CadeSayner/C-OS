@@ -4,11 +4,41 @@
 #include "process.h"
 #include "terminal.h"
 
-struct module* tm_processes;
+
+static struct module tm_processes[100];
 uint32_t process_count;
 
+void cpy_processes(struct module processes[100]){
+    for(int i=0; i<100; i++){
+        tm_processes[i] = processes[i];
+    }
+}
+
+void terminal_resume(){
+    Reset();
+    print("\n\nModules loaded:\n\n");
+    vga_set_text_color(COLOR8_LIGHT_BLUE);
+    printModules();
+    vga_set_text_color(COLOR8_LIGHT_GRAY);
+    while(1){
+        print("\nEnter pid to run:\n");
+        char* input = kmalloc(81); // maximum number of bytes needed to store the entire line
+        input[81] = '\0';
+        kread(input, 80); // read the line into input
+        print("\n");
+        uint32_t index = parse_uint(input);
+        if(index <= process_count -1){
+            // begin the process they entered
+            start_process(index);
+            break;
+        }else{
+            print("invalid entry");
+        }
+    }
+}
+
 void terminal_start(struct module processes[100]){
-    tm_processes = processes; 
+    cpy_processes(processes);
     process_count = get_process_count();
     print("\n\nModules loaded:\n\n");
     vga_set_text_color(COLOR8_LIGHT_BLUE);

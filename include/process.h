@@ -7,6 +7,7 @@ uint32_t get_current_process_brk();
 uint32_t set_current_process_brk();
 uint32_t get_current_process_sbrk();
 uint32_t get_current_process_page_dir();
+void terminate_current_process();
 
 struct process{
     uint16_t id;

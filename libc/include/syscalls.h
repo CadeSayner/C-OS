@@ -12,3 +12,5 @@ void reset_screen();
 void write_char_at(char chr, int column, int row);
 
 void update_echo(int enable);
+
+void exit();

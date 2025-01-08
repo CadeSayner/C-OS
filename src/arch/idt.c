@@ -6,6 +6,7 @@
 #include "sys_write.h"
 #include "sys_read.h"
 #include "sys_get.h"
+#include "sys_exit.h"
 #include "brk.h"
 #include "pm.h"
 
@@ -109,7 +110,7 @@ void initIdt(){
 
     install_syscall_handler(1, write);
     install_syscall_handler(0, read);
-
+    install_syscall_handler(40, sys_exit);
     install_syscall_handler(41, reset_screen);
     install_syscall_handler(42, sys_write_char_at);
     install_syscall_handler(43, update_echo);

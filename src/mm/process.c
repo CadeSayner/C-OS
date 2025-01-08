@@ -67,6 +67,13 @@ uint32_t get_current_process_page_dir(){
     while(!get_process_ptr(index)->status){index++;}
     return get_process(index).page_dir;
 }
+void terminate_current_process(){
+    uint32_t index = 0;
+    while(!get_process_ptr(index)->status){index++;}
+    //set the process status to 0 again
+    get_process_ptr(index)->status = 0;
+    
+}
 
 uint32_t set_current_process_brk(uint32_t vaddr){
     uint32_t index = 0;
