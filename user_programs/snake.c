@@ -1,5 +1,6 @@
 #include "syscalls.h"
 #include "stdio.h"
+#include "malloc.h"
 
 char modname[] __attribute__((section(".modname"), aligned(4))) = "snek";
 
@@ -17,6 +18,7 @@ static struct int_vec2 snake_pos = {1, 1};
 static struct int_vec2 grid_top_left_cnr = {5,5};
 static struct int_vec2 direction = {1,0}; // move to the right by default
 static struct vec_2_node fruits= { {7,3}, 0};
+static struct vec_2_node* body = 1;
 
 static int width = 50;
 static int height = 15;
@@ -32,6 +34,45 @@ void draw_snake(int prev_x, int prev_y){
 void draw_fruits(){
     struct vec_2_node* iter = &fruits;
     while(iter != 0){
+        write_char_at('$', iter->pos.x + grid_top_left_cnr.x, iter->pos.y + grid_top_left_cnr.y);
+        if((iter->pos.x + grid_top_left_cnr.x == snake_pos.x + grid_top_left_cnr.x) && (iter->pos.y + grid_top_left_cnr.y == snake_pos.y + grid_top_left_cnr.y)){
+            add_segment(); 
+        }
+        iter = iter->next;
+    }
+}
+
+void add_segment(){
+    struct vec_2_node* new_segment = (struct vec_2_node *)malloc(sizeof( struct vec_2_node));
+    if(body == 1){
+        // no body segment exists currently
+        body = new_segment;
+        new_segment->next = 1;
+    }
+    else{
+        // add the segment to the beginning of the list
+        new_segment->next = body;
+        body = new_segment;
+    }
+}
+
+void update_segments(){
+    struct vec_2_node* iter = body;
+    if(iter == 1){return;}
+    while(iter->next != 1){
+        // first clear the previous one
+        write_char_at(' ', iter->pos.x + grid_top_left_cnr.x, iter->pos.y + grid_top_left_cnr.y);
+        iter->pos = iter->next->pos;
+        iter = iter->next;
+    }if(iter != 1){
+        write_char_at(' ', iter->pos.x + grid_top_left_cnr.x, iter->pos.y + grid_top_left_cnr.y);
+        iter->pos = snake_pos;
+    }
+}
+
+void draw_segments(){
+    struct vec_2_node* iter = body;
+    while(iter != 1){
         write_char_at('*', iter->pos.x + grid_top_left_cnr.x, iter->pos.y + grid_top_left_cnr.y);
         iter = iter->next;
     }
@@ -63,17 +104,19 @@ int main(){
         time_elapsed++;
         if(time_elapsed > 100000000){
             handle_input();
+            update_segments();
+            // move the snakes head
             int prev_x = snake_pos.x;
             int prev_y = snake_pos.y;
             snake_pos.x += direction.x;
             snake_pos.y += direction.y;
             draw_snake(prev_x, prev_y);
             draw_fruits();
+            draw_segments();
             time_elapsed = 0;
         }
     }
 }
-
 
 void wait(int iterations){
     for(int i=0; i<iterations; i++){}
