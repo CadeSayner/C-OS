@@ -27,11 +27,14 @@ asm_code:
 	$(AC) $(AFLAGS) src/arch/gdt.s -o obj/gdts.o
 	$(AC) $(AFLAGS) src/arch/idt.s -o obj/idts.o
 
+obj:
+	mkdir obj
+
 kernel: asm_code c_code
 	ld $(LFlAGS) obj/boot.o obj/kernel.o obj/vga.o obj/gdts.o obj/gdt.o obj/utils.o obj/idt.o obj/idts.o obj/memory.o obj/keyboard.o obj/io.o obj/process.o obj/pm.o obj/sys_read.o obj/sys_write.o obj/terminal.o obj/brk.o obj/sys_get.o obj/sys_exit.o
 
 .PHONY: run
-run: kernel
+run: obj kernel
 	mv kernel COS/boot/kernel
 	grub-mkrescue -o COS.iso COS/
 	qemu-system-i386   -cdrom COS.iso -boot d
